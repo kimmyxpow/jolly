@@ -3,6 +3,7 @@
     "name": "jolly-lang",
     "version": "1.0.0",
     "description": "A fun compiler for Jolly language that transpiles into JavaScript.",
+    "repository": "https://github.com/kimmyxpow/jolly-lang",
     "main": "dist/index.js",
     "types": "dist/types/index.d.ts",
     "bin": {
