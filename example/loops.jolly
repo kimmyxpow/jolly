@@ -1,0 +1,15 @@
+// Loop examples in Jolly
+console.log("Counting from 1 to 5:");
+
+loopy (free i = 1; i <= 5; i++) {
+  console.log("Count: " + i);
+}
+
+console.log("Counting down from 5 to 1:");
+free j = 5;
+aslong (j > 0) {
+  console.log("Count: " + j);
+  j = j - 1;
+}
+
+lock pi = 3.14;

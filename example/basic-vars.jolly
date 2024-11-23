@@ -1,0 +1,6 @@
+// Variables with Jolly syntax
+lock pi = 3.14; // This is like const
+free radius = 5; // This is like let
+free area = pi * radius * radius; // Calculate the area of a circle
+
+console.log("The area of the circle is: " + area);

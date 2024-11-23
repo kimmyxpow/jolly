@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "sources": ["../src/core/keywords.ts"],
+  "sourcesContent": [
+    "/**\n * 🪄 Jolly Keywords Mapping\n * This file defines the magical transformation of Jolly keywords into JavaScript equivalents.\n * It's like the dictionary for your funky Jolly code. 📖✨\n */\nexport const keywordMapping: Record<string, string> = {\n    fun: 'function',\n    lock: 'const',\n    free: 'let',\n    fam: 'class',\n    loopy: 'for',\n    aslong: 'while',\n    when: 'if',\n    maybe: 'else if',\n    meh: 'else',\n    yay: 'return',\n    pls: 'await',\n    call: 'new',\n};\n"
+  ],
+  "mappings": ";4fAKO,IAAM,EAAyC,CAClD,IAAK,WACL,KAAM,QACN,KAAM,MACN,IAAK,QACL,MAAO,MACP,OAAQ,QACR,KAAM,KACN,MAAO,UACP,IAAK,OACL,IAAK,SACL,IAAK,QACL,KAAM,KACV",
+  "debugId": "28A2D90E7A58480164756E2164756E21",
+  "names": []
+}

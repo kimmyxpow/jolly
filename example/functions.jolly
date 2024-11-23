@@ -1,0 +1,12 @@
+// Defining and calling functions in Jolly
+fun greet(name) {
+  console.log("Hello, " + name + "! 🎉");
+}
+
+fun add(a, b) {
+  yay a + b;
+}
+
+greet("Jolly Programmer");
+lock result = add(10, 20);
+console.log("The result of 10 + 20 is: " + result);

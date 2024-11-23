@@ -1,0 +1,40 @@
+{
+    "type": "module",
+    "name": "jolly-lang",
+    "version": "1.0.0",
+    "description": "A fun compiler for Jolly language that transpiles into JavaScript.",
+    "main": "dist/index.js",
+    "types": "dist/types/index.d.ts",
+    "bin": {
+        "jolly": "dist/cli/cli.js"
+    },
+    "scripts": {
+        "build": "bun build ./src/index.ts ./src/**/*.ts --outdir ./dist --target=bun --sourcemap=linked --minify && tsc --emitDeclarationOnly",
+        "start": "bun run ./dist/cli/cli.js",
+        "test": "bun test",
+        "format": "prettier --write .",
+        "publish": "bun publish --access public"
+    },
+    "keywords": [
+        "jolly",
+        "compiler",
+        "javascript",
+        "cli"
+    ],
+    "author": "Abi Noval Fauzi",
+    "license": "MIT",
+    "dependencies": {
+        "chalk": "^5.3.0",
+        "commander": "^10.0.1",
+        "fast-glob": "^3.3.2",
+        "figlet": "^1.8.0",
+        "ora": "^6.3.1",
+        "prettier": "^3.3.3",
+        "terser": "^5.36.0",
+        "typescript": "^5.7.2"
+    },
+    "devDependencies": {
+        "@types/figlet": "^1.7.0",
+        "bun-types": "^1.1.36"
+    }
+}

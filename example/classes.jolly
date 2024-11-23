@@ -1,0 +1,17 @@
+// Defining and using a class in Jolly
+fam Animal {
+  constructor(name, sound) {
+    this.name = name;
+    this.sound = sound;
+  }
+
+  speak() {
+    console.log(this.name + " says " + this.sound);
+  }
+}
+
+lock cat = call Animal("Cat", "Meow");
+cat.speak();
+
+lock dog = call Animal("Dog", "Woof");
+dog.speak();

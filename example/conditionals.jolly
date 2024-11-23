@@ -1,0 +1,12 @@
+// Conditional logic with Jolly syntax
+free score = 85;
+
+when (score >= 90) {
+  console.log("You got an A! 🎉");
+} maybe (score >= 80) {
+  console.log("You got a B! 😄");
+} maybe (score >= 70) {
+  console.log("You got a C! 😊");
+} meh {
+  console.log("You need to work harder! 😢");
+}
