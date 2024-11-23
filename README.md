@@ -24,13 +24,13 @@ However, if you want to add some joy to your coding life, experiment with playfu
 ### Install Globally (for CLI)
 To use Jolly as a command-line tool:
 ```bash
-npm install -g jolly
+npm install -g jolly-lang
 ```
 
 ### Install Locally (for Programmatic Use)
 To use Jolly in your Node.js projects:
 ```bash
-npm install jolly
+npm install jolly-lang
 ```
 
 ## 🚀 Usage
@@ -59,7 +59,7 @@ Use **JollyCompiler** in your Node.js projects to compile Jolly code programmati
 
 #### Example:
 ```javascript
-import { JollyCompiler } from "jolly";
+import { JollyCompiler } from "jolly-lang";
 
 const compiler = new JollyCompiler();
 const jollyCode = `
