@@ -97,10 +97,8 @@ export class JollyCompiler {
     private validateLine(line: string, fileName: string, lineNumber: number): void {
         const trimmedLine = line.trim();
 
-        // Abaikan baris kosong atau komentar
         if (!trimmedLine || trimmedLine.startsWith('//')) return;
 
-        // Konteks-konteks yang valid untuk keyword
         const validContexts: Record<string, RegExp> = {
             when: /^\s*when\s*\(/,
             maybe: /^\s*\}\s*maybe\s*\(/,
@@ -109,12 +107,10 @@ export class JollyCompiler {
             aslong: /^\s*aslong\s*\(/,
         };
 
-        // Periksa apakah baris menggunakan keyword dengan konteks yang valid
         for (const [keyword, regex] of Object.entries(validContexts)) {
-            if (regex.test(trimmedLine)) return; // Valid keyword usage
+            if (regex.test(trimmedLine)) return;
         }
 
-        // Regex untuk mencari penggunaan keyword yang salah
         const reservedAsVariableRegex = new RegExp(
             `\\b(${this.reservedKeywords.join('|')})\\b\\s*=`
         );
@@ -126,7 +122,6 @@ export class JollyCompiler {
             `\\b(${this.reservedKeywords.join('|')})\\b\\s*:`
         );
 
-        // Cek keyword yang melanggar aturan
         const variableMatch = reservedAsVariableRegex.exec(line);
         if (variableMatch) {
             throw new CompilerError(
