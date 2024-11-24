@@ -49,9 +49,7 @@ export async function compileCommand(input: string, options: any) {
                     outputCode = await prettier.format(outputCode, { parser: 'babel' });
                 }
 
-                const outputFile = outputPath
-                    ? path.join(outputPath, path.basename(file, '.jolly') + '.js')
-                    : file.replace('.jolly', '.js');
+                const outputFile = path.join(outputPath ?? '', path.basename(file, '.jolly') + '.js');
 
                 fs.writeFileSync(outputFile, outputCode, 'utf-8');
                 spinner.succeed(chalk.green(`Compiled ${file} -> ${outputFile}`));
