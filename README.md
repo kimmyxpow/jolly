@@ -95,20 +95,23 @@ console.log(greeting);
 
 Here’s a quick peek at the **Jolly syntax** and its JavaScript equivalents:
 
-| Jolly Keyword | JavaScript Equivalent | Description                  |
-| ------------- | --------------------- | ---------------------------- |
-| `fun`         | `function`            | Define a function.           |
-| `lock`        | `const`               | Declare a constant variable. |
-| `free`        | `let`                 | Declare a mutable variable.  |
-| `fam`         | `class`               | Create a class.              |
-| `loopy`       | `for`                 | Create a for loop.           |
-| `aslong`      | `while`               | Create a while loop.         |
-| `when`        | `if`                  | Conditional statement (if).  |
-| `maybe`       | `else if`             | Additional condition.        |
-| `meh`         | `else`                | Fallback case.               |
-| `yay`         | `return`              | Return a value.              |
-| `pls`         | `await`               | Await an async task.         |
-| `call`        | `new`                 | Instantiate a class.         |
+| Jolly Keyword | JavaScript Equivalent | Description                         |
+| ------------- | --------------------- | ----------------------------------- |
+| `fun`         | `function`            | Define a function.                  |
+| `lock`        | `const`               | Declare a constant variable.        |
+| `free`        | `let`                 | Declare a mutable variable.         |
+| `fam`         | `class`               | Create a class.                     |
+| `loopy`       | `for`                 | Create a for loop.                  |
+| `aslong`      | `while`               | Create a while loop.                |
+| `when`        | `if`                  | Conditional statement (if).         |
+| `maybe`       | `else if`             | Additional condition.               |
+| `meh`         | `else`                | Fallback case.                      |
+| `yay`         | `return`              | Return a value.                     |
+| `pls`         | `await`               | Await an async task.                |
+| `call`        | `new`                 | Instantiate a class.                |
+| `pick`        | `switch`              | Switch statement for branching.     |
+| `option`      | `case`                | Case in a switch statement.         |
+| `fallback`    | `default`             | Default case in a switch statement. |
 
 ## ✨ Example Code
 
