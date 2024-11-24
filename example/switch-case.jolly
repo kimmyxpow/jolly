@@ -1,0 +1,17 @@
+// Example of switch-case in Jolly syntax
+
+lock weather = 'cloudy';
+
+pick (weather) {
+  option "sunny":
+    console.log("It's a sunny day! ☀️");
+    yay;
+  option "rainy":
+    console.log("It's raining outside! ☔");
+    yay;
+  option "cloudy":
+    console.log("It's a bit gloomy today. ☁️");
+    yay;
+  fallback:
+    console.log("Weather unknown. 🌈");
+}

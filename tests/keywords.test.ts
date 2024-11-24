@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { JollyCompiler } from '../src/core/compiler';
+import { JollyCompiler } from '~/core/compiler';
 
 const compiler = new JollyCompiler();
 
@@ -178,6 +178,29 @@ describe('Keyword Tests', () => {
             const output = compiler.compile(input, 'test.jolly');
             expect(output).toContain('// lock is here');
             expect(output).toContain('let value = 42;');
+        });
+    });
+
+    describe('Switch Case Tests', () => {
+        it('should compile pick, option, and fallback correctly', () => {
+            const input = `
+      pick (fruit) {
+        option "apple":
+          console.log("Apple! 🍎");
+          yay;
+        option "banana":
+          console.log("Banana! 🍌");
+          yay;
+        fallback:
+          console.log("Unknown! 🍇");
+      }
+    `;
+            const output = compiler.compile(input, 'test.jolly');
+            expect(output).toContain('switch (fruit)');
+            expect(output).toContain('case "apple":');
+            expect(output).toContain('case "banana":');
+            expect(output).toContain('default:');
+            expect(output).toContain('return;');
         });
     });
 });

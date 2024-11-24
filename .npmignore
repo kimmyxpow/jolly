@@ -1,0 +1,10 @@
+src/
+example/
+tests/
+example-js/
+.editorconfig
+.gitignore
+.prettierignore
+.prettierrc
+CONTRIBUTING.md
+tsconfig.json

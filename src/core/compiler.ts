@@ -74,10 +74,10 @@ export class JollyCompiler {
             }
 
             const regex = new RegExp(`\\b(${Object.keys(keywordMapping).join('|')})\\b`, 'g');
-            const compiledCodePart = codePart.replace(
-                regex,
-                (match) => keywordMapping[match] || match
-            );
+            const compiledCodePart = codePart.replace(regex, (match) => {
+                const mapping = keywordMapping[match];
+                return mapping?.jsEquivalent || match;
+            });
 
             compiledLines.push(compiledCodePart + commentPart);
         });
@@ -99,16 +99,8 @@ export class JollyCompiler {
 
         if (!trimmedLine || trimmedLine.startsWith('//')) return;
 
-        const validContexts: Record<string, RegExp> = {
-            when: /^\s*when\s*\(/,
-            maybe: /^\s*\}\s*maybe\s*\(/,
-            meh: /^\s*\}\s*meh\s*\{/,
-            loopy: /^\s*loopy\s*\(/,
-            aslong: /^\s*aslong\s*\(/,
-        };
-
-        for (const [keyword, regex] of Object.entries(validContexts)) {
-            if (regex.test(trimmedLine)) return;
+        for (const [keyword, { validContext }] of Object.entries(keywordMapping)) {
+            if (validContext && validContext.test(trimmedLine)) return; // Jika konteks valid, tidak ada masalah
         }
 
         const reservedAsVariableRegex = new RegExp(

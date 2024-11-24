@@ -1,7 +1,7 @@
 {
     "type": "module",
     "name": "jolly-lang",
-    "version": "1.0.0",
+    "version": "1.1.2",
     "description": "A fun compiler for Jolly language that transpiles into JavaScript.",
     "repository": "https://github.com/kimmyxpow/jolly-lang",
     "main": "dist/index.js",
@@ -11,10 +11,10 @@
     },
     "scripts": {
         "build": "bun build ./src/index.ts ./src/**/*.ts --outdir ./dist --target=bun --sourcemap=linked --minify && tsc --emitDeclarationOnly",
-        "start": "bun run ./dist/cli/cli.js",
+        "dev": "bun run ./src/cli/cli.ts",
         "test": "bun test",
         "format": "prettier --write .",
-        "publish": "bun publish --access public"
+        "cli-test": "bun src/cli/cli.ts compile \"example/**/*.jolly\" --output example-js/     "
     },
     "keywords": [
         "jolly",
