@@ -1,0 +1,86 @@
+// 🛠️ Basic Constructs
+// The `fun` keyword is used to define a function
+fun greet() {
+  console.log("Hello, Jolly World! 🌍");
+}
+
+lock pi = 3.14; // The `lock` keyword is for constants
+free age = 25; // The `free` keyword is for mutable variables
+
+// The `fam` keyword is used to define a class
+fam Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+
+  introduce() {
+    console.log("Hi, my name is " + this.name + " and I am " + this.age + " years old.");
+  }
+}
+
+// 🌀 Loops
+// The `loopy` keyword is used for `for` loops
+loopy (free i = 0; i < 5; i++) {
+  console.log("Looping:", i);
+}
+
+// The `aslong` keyword is used for `while` loops
+free countdown = 5;
+aslong (countdown > 0) {
+  console.log("Countdown:", countdown);
+  countdown--;
+}
+
+// 🛡️ Conditionals
+// The `when` keyword is used for `if` conditions
+when (age > 18) {
+  console.log("You are an adult. 🧑");
+} maybe (age === 18) { // The `maybe` keyword is for `else if`
+  console.log("You just turned 18! 🎉");
+} meh { // The `meh` keyword is for `else`
+  console.log("You are still a minor. 🧒");
+}
+
+// 💾 Return Values
+// The `yay` keyword is used for returning values
+fun add(a, b) {
+  yay a + b;
+}
+
+console.log("Addition Result:", add(5, 10)); // Inline comment about the result
+
+// 🌐 Async and Await
+// The `pls` keyword is used for `await`
+async fun fetchData() {
+  lock data = pls fetch("https://api.example.com");
+  yay data;
+}
+
+/* Multiline comment:
+   The following block demonstrates the use of 
+   `call` to instantiate a class */
+free john = call Person("John", 30); // `call` is used like `new`
+john.introduce();
+
+// 🎭 Switch-Case
+// The `pick` keyword is used for `switch` statements
+lock fruit = "apple";
+pick (fruit) {
+  option "apple": // The `option` keyword is like `case`
+    console.log("You chose an apple. 🍎");
+  option "banana":
+    console.log("You chose a banana. 🍌");
+  fallback: // The `fallback` keyword is like `default`
+    console.log("Unknown fruit. 🍇");
+}
+
+// 📝 Comments Examples
+// Single-line comment example
+console.log("This line has a comment after it."); // This is a single-line comment
+
+/* Multiline comment example:
+   This part of the code demonstrates how multiline
+   comments can be used to explain more complex logic.
+   You can add as many lines as needed! */
+console.log("This line has a multiline comment above it.");

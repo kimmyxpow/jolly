@@ -16,18 +16,9 @@ export class CompilerError extends Error {
      * @param codeLine - The actual line of code that caused the problem. 📝
      * @param keyword - The keyword that caused the error. 🔑
      */
-    constructor(
-        message: string,
-        fileName: string,
-        lineNumber: number,
-        codeLine: string,
-        keyword: string
-    ) {
+    constructor(message: string, fileName: string, lineNumber: number, codeLine: string, keyword: string) {
         const highlightedKeyword = chalk.red.bold(keyword);
-        const highlightedCode = codeLine.replace(
-            new RegExp(`\\b${keyword}\\b`, 'g'),
-            highlightedKeyword
-        );
+        const highlightedCode = codeLine.replace(new RegExp(`\\b${keyword}\\b`, 'g'), highlightedKeyword);
 
         const detailedMessage = `
 ${chalk.red('Compiler Error')}: ${message}

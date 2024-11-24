@@ -3,159 +3,209 @@ import { CompilerError } from '~/core/errors';
 
 /**
  * 🚀 JollyCompiler Class
- * This is where the magic happens! 🎩✨
- * The JollyCompiler takes your funky Jolly code and turns it into plain ol' JavaScript.
- * It's like having a translator that speaks "fun" but outputs "serious". 😄
+ * The JollyCompiler translates Jolly code into JavaScript. 🎩✨
  */
 export class JollyCompiler {
     private reservedKeywords: string[];
 
-    /**
-     * 🔧 Constructor
-     * Sets up the compiler with a list of reserved Jolly keywords.
-     * These keywords are off-limits for variable names, functions, or properties.
-     */
     constructor() {
         this.reservedKeywords = Object.keys(keywordMapping);
     }
 
     /**
-     * 🛠️ compile(input, fileName): string
-     * This method takes your Jolly code and compiles it into JavaScript.
-     * It's a full-service shop: it handles keywords, validates their use, and even respects your comments! 😉
+     * 🛠️ Compile Jolly code to JavaScript
      *
-     * @param input - The raw Jolly code (the fun stuff).
-     * @param fileName - The name of the file being compiled (for error reporting if things go sideways 🚨).
-     * @returns The JavaScript code as a string, ready to run. 💻
+     * @param input - The raw Jolly code.
+     * @param fileName - The file name for error reporting.
+     * @returns The compiled JavaScript code.
      */
     compile(input: string, fileName: string): string {
         const lines = input.split('\n');
         const compiledLines: string[] = [];
+        const blockStack: string[] = [];
         let inMultiLineComment = false;
 
-        lines.forEach((line, lineNumber) => {
-            if (!inMultiLineComment) {
-                this.validateLine(line, fileName, lineNumber + 1);
+        for (let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
+            let line = lines[lineNumber];
+            const trimmedLine = line.trim();
+
+            if (!inMultiLineComment) this.validateLine(trimmedLine, fileName, lineNumber + 1, blockStack);
+
+            const [codePart, commentPart, updatedMultiLineState] = this.extractCodeAndComment(line, inMultiLineComment);
+            inMultiLineComment = updatedMultiLineState;
+
+            if (inMultiLineComment && !commentPart) {
+                compiledLines.push(line);
+                continue;
             }
 
-            const singleLineCommentIndex = line.indexOf('//');
-            const multiLineCommentStartIndex = line.indexOf('/*');
-            const multiLineCommentEndIndex = line.indexOf('*/');
-
-            let codePart = line;
-            let commentPart = '';
-
-            if (inMultiLineComment) {
-                if (multiLineCommentEndIndex !== -1) {
-                    inMultiLineComment = false;
-                    commentPart = line.slice(0, multiLineCommentEndIndex + 2);
-                    codePart = line.slice(multiLineCommentEndIndex + 2);
-                } else {
-                    compiledLines.push(line);
-                    return;
-                }
-            } else {
-                if (multiLineCommentStartIndex !== -1 && multiLineCommentEndIndex === -1) {
-                    inMultiLineComment = true;
-                    commentPart = line.slice(multiLineCommentStartIndex);
-                    codePart = line.slice(0, multiLineCommentStartIndex);
-                } else if (multiLineCommentStartIndex !== -1 && multiLineCommentEndIndex !== -1) {
-                    commentPart = line.slice(
-                        multiLineCommentStartIndex,
-                        multiLineCommentEndIndex + 2
-                    );
-                    codePart =
-                        line.slice(0, multiLineCommentStartIndex) +
-                        line.slice(multiLineCommentEndIndex + 2);
-                } else if (singleLineCommentIndex !== -1) {
-                    codePart = line.slice(0, singleLineCommentIndex);
-                    commentPart = line.slice(singleLineCommentIndex);
-                }
+            if (trimmedLine === '}') blockStack.pop();
+            else if (this.isBlockOpener(trimmedLine)) {
+                const blockOpener = this.getBlockOpener(trimmedLine);
+                if (blockOpener) blockStack.push(blockOpener);
             }
 
-            const regex = new RegExp(`\\b(${Object.keys(keywordMapping).join('|')})\\b`, 'g');
-            const compiledCodePart = codePart.replace(regex, (match) => {
-                const mapping = keywordMapping[match];
-                return mapping?.jsEquivalent || match;
-            });
-
-            compiledLines.push(compiledCodePart + commentPart);
-        });
+            const processedCode = this.processCode(codePart);
+            compiledLines.push(processedCode + commentPart);
+        }
 
         return compiledLines.join('\n');
     }
 
     /**
-     * 🚦 validateLine(line, fileName, lineNumber): void
-     * Validates a single line of code for reserved keyword misuse.
-     * This is the gatekeeper 👮 of the Jolly world, making sure you don't misuse keywords like "fun" or "lock".
+     * 🚦 Validate a single line of Jolly code.
      *
      * @param line - The line of code to validate.
-     * @param fileName - The file where the line is located (for error messages).
-     * @param lineNumber - The line number in the file (for better debugging).
+     * @param fileName - The name of the file (for error reporting).
+     * @param lineNumber - The line number in the file.
+     * @param blockStack - Tracks the current block context.
      */
-    private validateLine(line: string, fileName: string, lineNumber: number): void {
-        const trimmedLine = line.trim();
+    private validateLine(line: string, fileName: string, lineNumber: number, blockStack: string[]): void {
+        if (!line || line.startsWith('//')) return;
 
-        if (!trimmedLine || trimmedLine.startsWith('//')) return;
+        const lineWithoutStrings = this.removeStringLiterals(line);
 
-        for (const [keyword, { validContext }] of Object.entries(keywordMapping)) {
-            if (validContext && validContext.test(trimmedLine)) return; // Jika konteks valid, tidak ada masalah
+        for (const [
+            keyword,
+            { validContext, requiredParentContext, isBlockOpener, isDependentKeyword },
+        ] of Object.entries(keywordMapping)) {
+            if (validContext && validContext.test(lineWithoutStrings)) {
+                if (isBlockOpener) return; // Block openers don't need validation
+                if (isDependentKeyword && blockStack[blockStack.length - 1] !== requiredParentContext) {
+                    throw new CompilerError(
+                        `The keyword "${keyword}" cannot be used outside a ${requiredParentContext} block.`,
+                        fileName,
+                        lineNumber,
+                        line,
+                        keyword
+                    );
+                }
+                return; // Valid keyword
+            }
         }
 
-        const reservedAsVariableRegex = new RegExp(
-            `\\b(${this.reservedKeywords.join('|')})\\b\\s*=`
+        this.validateReservedKeywordUsage(lineWithoutStrings, fileName, lineNumber, line);
+    }
+
+    /**
+     * Extracts code and comments from a line of code.
+     *
+     * @param line - The line of code.
+     * @param inMultiLineComment - Whether we're inside a multi-line comment.
+     * @returns [codePart, commentPart, updatedMultiLineState]
+     */
+    private extractCodeAndComment(line: string, inMultiLineComment: boolean): [string, string, boolean] {
+        const singleLineCommentIndex = line.indexOf('//');
+        const multiLineStart = line.indexOf('/*');
+        const multiLineEnd = line.indexOf('*/');
+
+        let codePart = line;
+        let commentPart = '';
+
+        if (inMultiLineComment) {
+            if (multiLineEnd !== -1) {
+                inMultiLineComment = false;
+                commentPart = line.slice(0, multiLineEnd + 2);
+                codePart = line.slice(multiLineEnd + 2);
+            }
+            return [codePart, commentPart, inMultiLineComment];
+        }
+
+        if (multiLineStart !== -1) {
+            if (multiLineEnd !== -1) {
+                commentPart = line.slice(multiLineStart, multiLineEnd + 2);
+                codePart = line.slice(0, multiLineStart) + line.slice(multiLineEnd + 2);
+            } else {
+                inMultiLineComment = true;
+                commentPart = line.slice(multiLineStart);
+                codePart = line.slice(0, multiLineStart);
+            }
+        } else if (singleLineCommentIndex !== -1) {
+            codePart = line.slice(0, singleLineCommentIndex);
+            commentPart = line.slice(singleLineCommentIndex);
+        }
+
+        return [codePart, commentPart, inMultiLineComment];
+    }
+
+    /**
+     * Removes string literals from a line of code.
+     *
+     * @param line - The line of code.
+     * @returns The line without string literals.
+     */
+    private removeStringLiterals(line: string): string {
+        return line.replace(/(["'])(?:(?=(\\?))\2.)*?\1/g, '');
+    }
+
+    /**
+     * Replaces keywords and preserves string literals.
+     *
+     * @param code - The code to process.
+     * @returns The processed code.
+     */
+    private processCode(code: string): string {
+        const stringLiterals: string[] = [];
+        const stringLiteralsRegex = /(["'])(?:(?=(\\?))\2.)*?\1/g;
+
+        const codeWithoutStrings = code.replace(stringLiteralsRegex, (match) => {
+            stringLiterals.push(match);
+            return '__STRING_LITERAL__';
+        });
+
+        const replacedCode = codeWithoutStrings.replace(
+            new RegExp(`\\b(${Object.keys(keywordMapping).join('|')})\\b`, 'g'),
+            (match) => keywordMapping[match]?.jsEquivalent || match
         );
-        const reservedAsFunctionRegex = new RegExp(
-            `\\b(${this.reservedKeywords.join('|')})\\b\\s*\\(`
+
+        return replacedCode.replace(/__STRING_LITERAL__/g, () => stringLiterals.shift() || '');
+    }
+
+    /**
+     * Validates reserved keyword usage in variables, functions, or properties.
+     */
+    private validateReservedKeywordUsage(
+        line: string,
+        fileName: string,
+        lineNumber: number,
+        originalLine: string
+    ): void {
+        const patterns = [
+            { regex: new RegExp(`\\b(${this.reservedKeywords.join('|')})\\b\\s*=`), error: 'variable name' },
+            { regex: new RegExp(`\\b(${this.reservedKeywords.join('|')})\\b\\s*\\(`), error: 'function name' },
+            { regex: new RegExp(`\\b(${this.reservedKeywords.join('|')})\\b\\s*:`), error: 'object literal key' },
+        ];
+
+        for (const { regex, error } of patterns) {
+            const match = regex.exec(line);
+            if (match) {
+                throw new CompilerError(
+                    `The keyword "${match[1]}" cannot be used as a ${error}.`,
+                    fileName,
+                    lineNumber,
+                    originalLine,
+                    match[1]
+                );
+            }
+        }
+    }
+
+    /**
+     * Checks if a line opens a block.
+     */
+    private isBlockOpener(line: string): boolean {
+        return Object.entries(keywordMapping).some(
+            ([_, { validContext, isBlockOpener }]) => isBlockOpener && validContext?.test(line)
         );
-        const reservedAsPropertyRegex = new RegExp(`\\.(${this.reservedKeywords.join('|')})\\b`);
-        const reservedInObjectLiteralRegex = new RegExp(
-            `\\b(${this.reservedKeywords.join('|')})\\b\\s*:`
+    }
+
+    /**
+     * Gets the block opener from a line.
+     */
+    private getBlockOpener(line: string): string | null {
+        const entry = Object.entries(keywordMapping).find(
+            ([_, { validContext, isBlockOpener }]) => isBlockOpener && validContext?.test(line)
         );
-
-        const variableMatch = reservedAsVariableRegex.exec(line);
-        if (variableMatch) {
-            throw new CompilerError(
-                `The keyword "${variableMatch[1]}" cannot be used as a variable name.`,
-                fileName,
-                lineNumber,
-                line,
-                variableMatch[1]
-            );
-        }
-
-        const functionMatch = reservedAsFunctionRegex.exec(line);
-        if (functionMatch) {
-            throw new CompilerError(
-                `The keyword "${functionMatch[1]}" cannot be used as a function name.`,
-                fileName,
-                lineNumber,
-                line,
-                functionMatch[1]
-            );
-        }
-
-        const propertyMatch = reservedAsPropertyRegex.exec(line);
-        if (propertyMatch) {
-            throw new CompilerError(
-                `The keyword "${propertyMatch[1]}" cannot be used as a property name.`,
-                fileName,
-                lineNumber,
-                line,
-                propertyMatch[1]
-            );
-        }
-
-        const objectLiteralMatch = reservedInObjectLiteralRegex.exec(line);
-        if (objectLiteralMatch) {
-            throw new CompilerError(
-                `The keyword "${objectLiteralMatch[1]}" cannot be used as a property name in an object literal.`,
-                fileName,
-                lineNumber,
-                line,
-                objectLiteralMatch[1]
-            );
-        }
+        return entry ? entry[0] : null;
     }
 }

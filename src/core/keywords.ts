@@ -12,20 +12,62 @@
  * - `validContext` (RegExp, optional): A regular expression that validates the correct context
  *   where the keyword can be used.
  */
-export const keywordMapping: Record<string, { jsEquivalent: string; validContext?: RegExp }> = {
+export const keywordMapping: Record<
+    string,
+    {
+        jsEquivalent: string;
+        validContext?: RegExp;
+        requiredParentContext?: string;
+        isBlockOpener?: boolean;
+        isDependentKeyword?: boolean;
+    }
+> = {
+    // Basic constructs
     fun: { jsEquivalent: 'function' },
     lock: { jsEquivalent: 'const' },
     free: { jsEquivalent: 'let' },
     fam: { jsEquivalent: 'class' },
-    loopy: { jsEquivalent: 'for', validContext: /^\s*loopy\s*\(/ },
-    aslong: { jsEquivalent: 'while', validContext: /^\s*aslong\s*\(/ },
-    when: { jsEquivalent: 'if', validContext: /^\s*when\s*\(/ },
-    maybe: { jsEquivalent: 'else if', validContext: /^\s*\}\s*maybe\s*\(/ },
-    meh: { jsEquivalent: 'else', validContext: /^\s*\}\s*meh\s*\{/ },
+
+    // Loops
+    loopy: { jsEquivalent: 'for', validContext: /^\s*loopy\s*\(/, isBlockOpener: true },
+    aslong: { jsEquivalent: 'while', validContext: /^\s*aslong\s*\(/, isBlockOpener: true },
+
+    // Conditionals
+    when: { jsEquivalent: 'if', validContext: /^\s*when\s*\(/, isBlockOpener: true },
+    maybe: {
+        jsEquivalent: 'else if',
+        validContext: /^\s*(} )?maybe\s*\(/,
+        requiredParentContext: 'when',
+        isDependentKeyword: true,
+    },
+    meh: {
+        jsEquivalent: 'else',
+        validContext: /^\s*(} )?meh\s*\{/,
+        requiredParentContext: 'when',
+        isDependentKeyword: true,
+    },
+
+    // Return
     yay: { jsEquivalent: 'return' },
+
+    // Async
     pls: { jsEquivalent: 'await' },
+
+    // Instantiation
     call: { jsEquivalent: 'new' },
-    pick: { jsEquivalent: 'switch', validContext: /^\s*pick\s*\(/ },
-    option: { jsEquivalent: 'case', validContext: /^\s*option\s+/ },
-    fallback: { jsEquivalent: 'default', validContext: /^\s*fallback\s*:/ },
+
+    // Switch-case
+    pick: { jsEquivalent: 'switch', validContext: /^\s*pick\s*\(/, isBlockOpener: true },
+    option: {
+        jsEquivalent: 'case',
+        validContext: /^\s*option\s+/,
+        requiredParentContext: 'pick',
+        isDependentKeyword: true,
+    },
+    fallback: {
+        jsEquivalent: 'default',
+        validContext: /^\s*fallback\s*:/,
+        requiredParentContext: 'pick',
+        isDependentKeyword: true,
+    },
 };
