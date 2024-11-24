@@ -8,10 +8,11 @@
         "types": ["bun-types"],
         "declaration": true,
         "declarationDir": "./dist/types",
+        "noImplicitAny": true,
         "paths": {
             "~/*": ["./src/*"]
         }
     },
-    "include": ["*/*"],
+    "include": ["*/**/*.ts"],
     "exclude": ["node_modules", "dist"]
 }
