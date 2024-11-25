@@ -1,7 +1,7 @@
-src/
-example/
-tests/
-example-js/
+/src/
+/example/
+/tests/
+/example-js/
 .editorconfig
 .gitignore
 .prettierignore
