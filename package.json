@@ -4,6 +4,10 @@
     "version": "1.1.5",
     "description": "A fun compiler for Jolly language that transpiles into JavaScript.",
     "repository": "https://github.com/kimmyxpow/jolly-lang",
+    "homepage": "https://jolly.pow.kim",
+    "bugs": {
+        "url": "https://github.com/kimmyxpow/jolly-lang/issues"
+    },
     "main": "dist/index.js",
     "types": "dist/types/index.d.ts",
     "bin": {
