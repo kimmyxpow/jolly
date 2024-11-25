@@ -5,13 +5,13 @@ lock weather = 'cloudy';
 pick (weather) {
   option "sunny":
     console.log("It's a sunny day! ☀️");
-    break;
+    bail;
   option "rainy":
     console.log("It's raining outside! ☔");
-    break;
+    bail;
   option "cloudy":
     console.log("It's a bit gloomy today. ☁️");
-    break;
+    bail;
   fallback:
     console.log("Weather unknown. 🌈");
 }

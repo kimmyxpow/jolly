@@ -12,7 +12,7 @@
  * - `validContext` (RegExp, optional): A regular expression that validates the correct context
  *   where the keyword can be used.
  */
-export const keywordMapping: Record<
+type KeywordMapping = Record<
     string,
     {
         jsEquivalent: string;
@@ -21,7 +21,9 @@ export const keywordMapping: Record<
         isBlockOpener?: boolean;
         isDependentKeyword?: boolean;
     }
-> = {
+>;
+
+export const keywordMapping: KeywordMapping = {
     // Basic constructs
     fun: { jsEquivalent: 'function' },
     lock: { jsEquivalent: 'const' },
@@ -70,4 +72,8 @@ export const keywordMapping: Record<
         requiredParentContext: 'pick',
         isDependentKeyword: true,
     },
+
+    // Loop control
+    bail: { jsEquivalent: 'break' },
+    skip: { jsEquivalent: 'continue' },
 };
