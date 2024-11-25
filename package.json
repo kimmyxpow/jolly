@@ -11,6 +11,7 @@
     },
     "scripts": {
         "build": "bun build ./src/index.ts ./src/**/*.ts --outdir ./dist --target=bun --sourcemap=linked --minify && tsc --emitDeclarationOnly",
+        "publish:npm": "bun format && bun run build && bun publish --access public",
         "format": "prettier --write .",
         "compile:example": "bun src/cli/cli.ts compile \"example/**/*.jolly\" --output example-js/     "
     },
